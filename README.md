@@ -6,7 +6,7 @@ A simple Dart implementation of bubble chart.
 
 ## Usage
 
-Add flutter_map to your pubspec:
+Add bubble_chart to your pubspec:
 
 ```yaml
 dependencies:
