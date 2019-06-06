@@ -1,4 +1,4 @@
-# flutter_map_marker_cluster_example
+# bubble_chart_example
 
 A new Flutter project.
 

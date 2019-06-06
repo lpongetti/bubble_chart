@@ -1,4 +1,4 @@
-package com.example.flutter_map_marker_cluster_example;
+package com.example.bubble_chart_example;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
