@@ -1,0 +1,17 @@
+name: bubble_chart
+description: A Dart implementation of bubble chart.
+version: 0.1.0
+author: Lorenzo Pongetti <lorenzo.pongetti@gmail.com>
+
+homepage: https://github.com/lpongetti/bubble_chart
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
