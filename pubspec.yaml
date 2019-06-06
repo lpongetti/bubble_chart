@@ -1,6 +1,9 @@
 name: bubble_chart
-description: A Dart implementation of bubble chart.
-version: 0.1.0
+description:
+  A simple Dart implementation of bubble chart.
+  It creates bubbles in random points and collide its all to container center.
+  Can be implemented with any features.
+version: 0.1.1
 author: Lorenzo Pongetti <lorenzo.pongetti@gmail.com>
 
 homepage: https://github.com/lpongetti/bubble_chart
