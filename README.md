@@ -28,7 +28,7 @@ Add in you project.
       color: Colors.blue,
       radius: 40,
       builder: (context) {
-        return Text("ciao");
+        return Text("hello world");
       },
       onTap: () {
         print("tap1");
