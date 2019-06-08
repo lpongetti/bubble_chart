@@ -4,6 +4,13 @@
 
 A simple Dart implementation of bubble chart.
 
+<div style="text-align: center"><table><tr>
+  <td style="text-align: center">
+  <a href="https://github.com/lpongetti/bubble_chart/blob/master/example.png">
+    <img src="https://github.com/lpongetti/bubble_chart/blob/master/example.png" width="200"/></a>
+</td>
+</tr></table></div>
+
 ## Usage
 
 Add bubble_chart to your pubspec:
