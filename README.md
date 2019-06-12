@@ -1,6 +1,6 @@
 # Bubble chart
 
-[![pub package](https://img.shields.io/pub/v/bubble_chart.svg)](https://pub.dartlang.org/packages/bubble_chart)
+[![pub package](https://img.shields.io/pub/v/bubble_chart.svg)](https://pub.dartlang.org/packages/bubble_chart) ![travis](https://api.travis-ci.com/lpongetti/bubble_chart.svg?branch=master)
 
 A simple Dart implementation of bubble chart.
 
