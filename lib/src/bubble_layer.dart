@@ -1,25 +1,26 @@
-import 'package:bubble_chart/src/bubble.dart';
+import 'package:bubble_chart/src/bubble_node.dart';
 import 'package:flutter/material.dart';
 
 class BubbleLayer extends StatelessWidget {
-  final Bubble bubble;
+  final BubbleNode bubble;
 
-  const BubbleLayer(this.bubble);
+  const BubbleLayer({this.bubble});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: bubble.onTap,
+      // onTap: bubble.onTap,
       child: InkResponse(
         child: Container(
           width: bubble.radius * 2,
           height: bubble.radius * 2,
           decoration: BoxDecoration(
-            color: bubble.color,
+            color: bubble.color ?? Colors.blue,
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: bubble.builder(context),
+            child:
+                bubble.builder != null ? bubble.builder(context) : Container(),
           ),
         ),
       ),

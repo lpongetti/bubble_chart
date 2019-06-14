@@ -1,26 +1,108 @@
-import 'dart:math';
-import 'package:bubble_chart/src/bubble.dart';
-import 'package:bubble_chart/src/quadtree.dart';
+import 'package:bubble_chart/src/bubble_node_base.dart';
 import 'package:flutter/material.dart';
 
-class BubbleNode implements Bubble, HasPoint {
-  final Bubble bubble;
-  Point point;
+class BubbleNode extends BubbleNodeBase {
+  List<BubbleNode> _children;
+  Color _color;
+  int _padding;
+  num _value;
+  WidgetBuilder _builder;
+  BubbleNode _parent;
+  double radius;
+  double x = 0;
+  double y = 0;
 
-  BubbleNode({
-    this.bubble,
-    Point point,
-  }) : this.point = point;
+  List<BubbleNode> get children => _children;
+  Color get color => _color;
+  num get value => _value;
+  int get padding => _padding;
+  WidgetBuilder get builder => _builder;
+  BubbleNode get parent => _parent;
 
-  @override
-  get builder => bubble.builder;
+  BubbleNode.node({
+    @required List<BubbleNode> children,
+    int padding = 0,
+    Color color,
+  })  : _children = children,
+        _padding = padding,
+        _color = color,
+        assert(children != null && children.length > 0) {
+    _value = 0;
+    for (var child in children) {
+      _value += child.value;
+      child._parent = this;
+    }
+  }
 
-  @override
-  Color get color => bubble.color;
+  BubbleNode.leaf({
+    @required num value,
+    WidgetBuilder builder,
+    Color color,
+  })  : _value = value,
+        _builder = builder,
+        _color = color,
+        assert(value != null);
 
-  @override
-  get onTap => bubble.onTap;
+  int get depth {
+    int depth = 0;
+    BubbleNode parent = _parent;
+    while (parent != null) {
+      parent = parent._parent;
+      depth++;
+    }
+    return depth;
+  }
 
-  @override
-  double get radius => bubble.radius;
+  List<BubbleNode> get leaves {
+    var leafs = List<BubbleNode>();
+    for (var child in children) {
+      if (child.children == null) {
+        leafs.add(child);
+      } else {
+        leafs.addAll(child.leaves);
+      }
+    }
+    return leafs;
+  }
+
+  List<BubbleNode> get nodes {
+    var nodes = List<BubbleNode>();
+    for (var child in children) {
+      nodes.add(child);
+      if (child.children != null && child.children.isNotEmpty)
+        nodes.addAll(child.nodes);
+    }
+    return nodes;
+  }
+
+  eachBefore(Function(BubbleNode) callback) {
+    var node = this;
+    var nodes = [node];
+
+    while (nodes.isNotEmpty && (node = nodes.removeLast()) != null) {
+      callback(node);
+      var children = node.children;
+      if (children != null) {
+        nodes.addAll(children.reversed);
+      }
+    }
+  }
+
+  eachAfter(Function(BubbleNode) callback) {
+    var node = this;
+    var nodes = [node];
+    var next = List<BubbleNode>();
+
+    while (nodes.isNotEmpty && (node = nodes.removeLast()) != null) {
+      next.add(node);
+      var children = node.children;
+      if (children != null) {
+        nodes.addAll(children);
+      }
+    }
+
+    while (next.isNotEmpty && (node = next.removeLast()) != null) {
+      callback(node);
+    }
+  }
 }
