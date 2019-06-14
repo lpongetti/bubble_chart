@@ -8,15 +8,21 @@ final root = BubbleNode.node(
       padding: 30,
       children: [
         BubbleNode.leaf(
-          color: Colors.brown,
+          options: BubbleOptions(
+            color: Colors.brown,
+          ),
           value: 2583,
         ),
         BubbleNode.leaf(
-          color: Colors.yellow,
+          options: BubbleOptions(
+            color: Colors.brown,
+          ),
           value: 4159,
         ),
         BubbleNode.leaf(
-          color: Colors.yellow,
+          options: BubbleOptions(
+            color: Colors.brown,
+          ),
           value: 4159,
         ),
       ],
@@ -69,7 +75,7 @@ class MyHomePage extends StatelessWidget {
       body: Container(
         height: 600,
         width: 600,
-        child: BubbleChart(
+        child: BubbleChartLayout(
           root: root,
         ),
       ),

@@ -6,21 +6,25 @@ class BubbleLayer extends StatelessWidget {
 
   const BubbleLayer({this.bubble});
 
+  onTap() {
+    if (bubble.options.onTap != null) bubble.options.onTap();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // onTap: bubble.onTap,
+      onTap: onTap,
       child: InkResponse(
         child: Container(
           width: bubble.radius * 2,
           height: bubble.radius * 2,
           decoration: BoxDecoration(
-            color: bubble.color ?? Colors.blue,
+            border: bubble.options?.border ?? Border(),
+            color: bubble.options?.color ?? Theme.of(context).accentColor,
             shape: BoxShape.circle,
           ),
           child: Center(
-            child:
-                bubble.builder != null ? bubble.builder(context) : Container(),
+            child: bubble.options?.child ?? Container(),
           ),
         ),
       ),

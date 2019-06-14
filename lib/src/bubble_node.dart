@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class BubbleNode extends BubbleNodeBase {
   List<BubbleNode> _children;
-  Color _color;
+  BubbleOptions options;
   int _padding;
   num _value;
   WidgetBuilder _builder;
@@ -13,7 +13,6 @@ class BubbleNode extends BubbleNodeBase {
   double y = 0;
 
   List<BubbleNode> get children => _children;
-  Color get color => _color;
   num get value => _value;
   int get padding => _padding;
   WidgetBuilder get builder => _builder;
@@ -22,10 +21,9 @@ class BubbleNode extends BubbleNodeBase {
   BubbleNode.node({
     @required List<BubbleNode> children,
     int padding = 0,
-    Color color,
+    this.options,
   })  : _children = children,
         _padding = padding,
-        _color = color,
         assert(children != null && children.length > 0) {
     _value = 0;
     for (var child in children) {
@@ -37,10 +35,9 @@ class BubbleNode extends BubbleNodeBase {
   BubbleNode.leaf({
     @required num value,
     WidgetBuilder builder,
-    Color color,
+    this.options,
   })  : _value = value,
         _builder = builder,
-        _color = color,
         assert(value != null);
 
   int get depth {
@@ -105,4 +102,18 @@ class BubbleNode extends BubbleNodeBase {
       callback(node);
     }
   }
+}
+
+class BubbleOptions {
+  final Color color;
+  final BoxBorder border;
+  final Widget child;
+  final GestureTapCallback onTap;
+
+  BubbleOptions({
+    this.color,
+    this.border,
+    this.child,
+    this.onTap,
+  });
 }

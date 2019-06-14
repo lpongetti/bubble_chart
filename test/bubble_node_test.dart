@@ -2,25 +2,19 @@ import 'package:bubble_chart/src/bubble_node.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 main() {
-  test("aaa", () {
+  test("bubble node leaves", () {
     final root = BubbleNode.node(
       children: [
         BubbleNode.leaf(
-          value: 4319,
+          value: 25,
         ),
         BubbleNode.leaf(
-          value: 4159,
-        ),
-        BubbleNode.leaf(
-          value: 2583,
-        ),
-        BubbleNode.leaf(
-          value: 2074,
-        ),
+          value: 50,
+        )
       ],
     );
 
-    expect(root.leaves.length, 4);
-    expect(root.leaves[0].radius, 4319);
+    expect(root.leaves.length, 2);
+    expect(root.leaves[0].value, 25);
   });
 }
