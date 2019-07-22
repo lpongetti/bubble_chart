@@ -23,22 +23,59 @@ dependencies:
 Add in you project.
 
 ```dart
-  final bubbles = [
-    Bubble(
-      color: Colors.blue,
-      radius: 40,
-      builder: (context) {
-        return Text("hello world");
-      },
-      onTap: () {
-        print("tap1");
-      },
-    ),
-  ];
+  final bubbles = BubbleNode.node(
+    padding: 15,
+    children: [
+      BubbleNode.node(
+        padding: 30,
+        children: [
+          BubbleNode.leaf(
+            options: BubbleOptions(
+              color: Colors.brown,
+            ),
+            value: 2583,
+          ),
+          BubbleNode.leaf(
+            options: BubbleOptions(
+              color: Colors.brown,
+            ),
+            value: 4159,
+          ),
+          BubbleNode.leaf(
+            options: BubbleOptions(
+              color: Colors.brown,
+            ),
+            value: 4159,
+          ),
+        ],
+      ),
+      BubbleNode.leaf(
+        value: 4159,
+      ),
+      BubbleNode.leaf(
+        value: 2074,
+      ),
+      BubbleNode.leaf(
+        value: 4319,
+      ),
+      BubbleNode.leaf(
+        value: 2074,
+      ),
+      BubbleNode.leaf(
+        value: 2074,
+      ),
+      BubbleNode.leaf(
+        value: 2074,
+      ),
+      BubbleNode.leaf(
+        value: 2074,
+      ),
+    ],
+  );
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BubbleChart(
+      body: BubbleChartLayout(
         bubbles: bubbles,
       ),
     );
