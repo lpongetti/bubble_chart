@@ -2,12 +2,12 @@ import 'package:bubble_chart/src/bubble_node.dart';
 import 'package:flutter/material.dart';
 
 class BubbleLayer extends StatelessWidget {
-  final BubbleNode bubble;
+  final BubbleNode? bubble;
 
   const BubbleLayer({this.bubble});
 
   onTap() {
-    if (bubble.options.onTap != null) bubble.options.onTap();
+    if (bubble!.options!.onTap != null) bubble!.options!.onTap!();
   }
 
   @override
@@ -15,15 +15,15 @@ class BubbleLayer extends StatelessWidget {
     return InkResponse(
       onTap: onTap,
       child: Container(
-        width: bubble.radius * 2,
-        height: bubble.radius * 2,
+        width: bubble!.radius! * 2,
+        height: bubble!.radius! * 2,
         decoration: BoxDecoration(
-          border: bubble.options?.border ?? Border(),
-          color: bubble.options?.color ?? Theme.of(context).accentColor,
+          border: bubble!.options?.border ?? Border(),
+          color: bubble!.options?.color ?? Theme.of(context).accentColor,
           shape: BoxShape.circle,
         ),
         child: Center(
-          child: bubble.options?.child ?? Container(),
+          child: bubble!.options?.child ?? Container(),
         ),
       ),
     );

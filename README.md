@@ -76,7 +76,7 @@ Add in you project.
   Widget build(BuildContext context) {
     return Scaffold(
       body: BubbleChartLayout(
-        bubbles: bubbles,
+        root: bubbles,
       ),
     );
   }

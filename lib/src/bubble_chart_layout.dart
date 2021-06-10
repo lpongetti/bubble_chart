@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 
 class BubbleChartLayout extends StatelessWidget {
   final BubbleNode root;
-  final double Function(BubbleNode) radius;
+  final double Function(BubbleNode)? radius;
 
   BubbleChartLayout({
-    @required this.root,
+    required this.root,
     this.radius,
   });
 
@@ -27,10 +27,10 @@ class BubbleChartLayout extends StatelessWidget {
             return result
               ..add(
                 Positioned(
-                  top: node.y - node.radius,
-                  left: node.x - node.radius,
-                  width: node.radius * 2,
-                  height: node.radius * 2,
+                  top: node.y! - node.radius!,
+                  left: node.x! - node.radius!,
+                  width: node.radius! * 2,
+                  height: node.radius! * 2,
                   child: BubbleLayer(bubble: node),
                 ),
               );

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class BubbleChart {
   final BubbleNode root;
   final Size size;
-  final double Function(BubbleNode) radius;
+  final double Function(BubbleNode)? radius;
 
   List<BubbleNode> get leaves {
     return root.leaves;
@@ -18,11 +18,11 @@ class BubbleChart {
   }
 
   BubbleChart({
-    @required this.root,
-    @required this.size,
+    required this.root,
+    required this.size,
     this.radius,
-  })  : assert(root != null && root.children.length > 0),
-        assert(size != null && size.width > 0 && size.height > 0) {
+  })  : assert(root.children!.length > 0),
+        assert(size.width > 0 && size.height > 0) {
     root.x = size.width / 2;
     root.y = size.height / 2;
 
@@ -35,36 +35,36 @@ class BubbleChart {
       root
         ..leaves.forEach(_radiusLeaf(_defaultRadius))
         ..eachAfter(_packChildren(1, 0))
-        ..eachAfter(_packChildren(root.radius / min(size.width, size.height)))
+        ..eachAfter(_packChildren(root.radius! / min(size.width, size.height)))
         ..eachBefore(
-            _translateChild(min(size.width, size.height) / (2 * root.radius)));
+            _translateChild(min(size.width, size.height) / (2 * root.radius!)));
     }
   }
 
-  Function(BubbleNode) _radiusLeaf(double Function(BubbleNode) radius) {
+  Function(BubbleNode) _radiusLeaf(double Function(BubbleNode)? radius) {
     return (BubbleNode node) {
-      if (node.children == null || node.children.isEmpty) {
-        node.radius = max(0, radius(node) ?? 0);
+      if (node.children == null || node.children!.isEmpty) {
+        node.radius = max(0, radius!(node));
       }
     };
   }
 
   double _defaultRadius(BubbleNode node) {
-    return sqrt(node.value);
+    return sqrt(node.value!);
   }
 
-  _packChildren(double k, [int padding]) {
+  _packChildren(double k, [int? padding]) {
     return (BubbleNode node) {
       var children = node.children;
       if (children != null && children.isNotEmpty) {
-        var r = (padding ?? node.padding) * k;
+        var r = (padding ?? node.padding)! * k;
 
         if (r != 0) {
-          for (var child in children) child.radius += r;
+          for (var child in children) child.radius = child.radius! + r;
         }
-        var e = _packEnclose(children);
+        var e = _packEnclose(children)!;
         if (r != 0) {
-          for (var child in children) child.radius -= r;
+          for (var child in children) child.radius = child.radius! - r;
         }
         node.radius = e + r;
       }
@@ -74,15 +74,15 @@ class BubbleChart {
   _translateChild(double k) {
     return (BubbleNode node) {
       var parent = node.parent;
-      node.radius *= k;
+      node.radius = node.radius! * k;
       if (parent != null) {
-        node.x = parent.x + k * node.x;
-        node.y = parent.y + k * node.y;
+        node.x = parent.x! + k * node.x!;
+        node.y = parent.y! + k * node.y!;
       }
     };
   }
 
-  double _packEnclose(List<BubbleNode> circles) {
+  double? _packEnclose(List<BubbleNode> circles) {
     if (circles.length == 0) return 0;
 
     // Place the first circle.
@@ -94,11 +94,11 @@ class BubbleChart {
 
     // Place the second circle.
     var second = circles[1];
-    first.x = -second.radius;
+    first.x = -second.radius!;
     second
       ..x = first.radius
       ..y = 0;
-    if (circles.length == 2) return first.radius + second.radius;
+    if (circles.length == 2) return first.radius! + second.radius!;
 
     // Place the third circle.
     var other = circles[2];
@@ -124,28 +124,28 @@ class BubbleChart {
       // “Ahead” or “behind” is likewise determined by linear distance.
       var j = b.next, k = a.previous, sj = b.node.radius, sk = a.node.radius;
       do {
-        if (sj <= sk) {
-          if (_intersects(j.node, c.node)) {
+        if ((sj as num) <= (sk as num)) {
+          if (_intersects(j!.node, c.node)) {
             b = j;
             a.next = b;
             b.previous = a;
             --i;
             continue pack;
           }
-          sj += j.node.radius;
+          sj = sj! + j.node.radius!;
           j = j.next;
         } else {
-          if (_intersects(k.node, c.node)) {
+          if (_intersects(k!.node, c.node)) {
             a = k;
             a.next = b;
             b.previous = a;
             --i;
             continue pack;
           }
-          sk += k.node.radius;
+          sk = sk! + k.node.radius!;
           k = k.previous;
         }
-      } while (j != k.next);
+      } while (j != k!.next);
 
       // Success! Insert the new circle c between a and b.
       c.previous = a;
@@ -154,80 +154,80 @@ class BubbleChart {
 
       // Compute the new closest circle pair to the centroid.
       var aa = _score(a);
-      while ((c = c.next) != b) {
+      while ((c = c.next!) != b) {
         var ca = _score(c);
         if (ca < aa) {
           a = c;
           aa = ca;
         }
       }
-      b = a.next;
+      b = a.next!;
     }
 
     // Compute the enclosing circle of the front chain.
     var ra = [b.node];
     c = b;
-    while ((c = c.next) != b) ra.add(c.node);
-    var f = _enclose(ra);
+    while ((c = c.next!) != b) ra.add(c.node);
+    var f = _enclose(ra)!;
 
     // Translate the circles to put the enclosing circle around the origin.
     for (var i = 0; i < circles.length; ++i) {
       var a2 = circles[i];
-      a2.x -= f.x;
-      a2.y -= f.y;
+      a2.x = a2.x! - f.x!;
+      a2.y = a2.y! - f.y!;
     }
 
     return f.radius;
   }
 
   _place(BubbleNode b, BubbleNode a, BubbleNode c) {
-    double dx = b.x - a.x;
-    double dy = b.y - a.y;
+    double dx = b.x! - a.x!;
+    double dy = b.y! - a.y!;
     double d2 = dx * dx + dy * dy;
     if (d2 != 0) {
-      var a2 = a.radius + c.radius;
+      var a2 = a.radius! + c.radius!;
       a2 *= a2;
-      var b2 = b.radius + c.radius;
+      var b2 = b.radius! + c.radius!;
       b2 *= b2;
       if (a2 > b2) {
         var x = (d2 + b2 - a2) / (2 * d2);
         var y = sqrt(max(0, b2 / d2 - x * x));
-        c.x = b.x - x * dx - y * dy;
-        c.y = b.y - x * dy + y * dx;
+        c.x = b.x! - x * dx - y * dy;
+        c.y = b.y! - x * dy + y * dx;
       } else {
         var x = (d2 + a2 - b2) / (2 * d2);
         var y = sqrt(max(0, a2 / d2 - x * x));
-        c.x = a.x + x * dx - y * dy;
-        c.y = a.y + x * dy + y * dx;
+        c.x = a.x! + x * dx - y * dy;
+        c.y = a.y! + x * dy + y * dx;
       }
     } else {
-      c.x = a.x + c.radius;
+      c.x = a.x! + c.radius!;
       c.y = a.y;
     }
   }
 
   _intersects(BubbleNode a, BubbleNode b) {
-    var dr = a.radius + b.radius - 1e-6;
-    var dx = b.x - a.x, dy = b.y - a.y;
+    var dr = a.radius! + b.radius! - 1e-6;
+    var dx = b.x! - a.x!, dy = b.y! - a.y!;
     return dr > 0 && dr * dr > dx * dx + dy * dy;
   }
 
   _score(Chain<BubbleNode> chain) {
     var a = chain.node,
-        b = chain.next.node,
-        ab = a.radius + b.radius,
-        dx = (a.x * b.radius + b.x * a.radius) / ab,
-        dy = (a.y * b.radius + b.y * a.radius) / ab;
+        b = chain.next!.node,
+        ab = a.radius! + b.radius!,
+        dx = (a.x! * b.radius! + b.x! * a.radius!) / ab,
+        dy = (a.y! * b.radius! + b.y! * a.radius!) / ab;
     return dx * dx + dy * dy;
   }
 
-  BubbleNodeBase _enclose(List<BubbleNodeBase> children) {
-    var circles = List<BubbleNodeBase>()
+  BubbleNodeBase? _enclose(List<BubbleNodeBase> children) {
+    var circles = <BubbleNodeBase>[]
       ..addAll(children)
       ..shuffle();
 
-    BubbleNodeBase e;
-    var dB = List<BubbleNodeBase>();
+    BubbleNodeBase? e;
+    var dB = <BubbleNodeBase>[];
     var i = 0;
     while (i < circles.length) {
       var p = circles[i];
@@ -243,9 +243,9 @@ class BubbleChart {
   }
 
   bool _enclosesWeak(BubbleNodeBase a, BubbleNodeBase b) {
-    var dr = a.radius - b.radius + 1e-6;
-    var dx = b.x - a.x;
-    var dy = b.y - a.y;
+    var dr = a.radius! - b.radius! + 1e-6;
+    var dx = b.x! - a.x!;
+    var dy = b.y! - a.y!;
     return dr > 0 && dr * dr > dx * dx + dy * dy;
   }
 
@@ -259,13 +259,13 @@ class BubbleChart {
   }
 
   bool _enclosesNot(BubbleNodeBase a, BubbleNodeBase b) {
-    var dr = a.radius - b.radius;
-    var dx = b.x - a.x;
-    var dy = b.y - a.y;
+    var dr = a.radius! - b.radius!;
+    var dx = b.x! - a.x!;
+    var dy = b.y! - a.y!;
     return dr < 0 || dr * dr < dx * dx + dy * dy;
   }
 
-  BubbleNodeBase _encloseBasis(List<BubbleNodeBase> b) {
+  BubbleNodeBase? _encloseBasis(List<BubbleNodeBase> b) {
     switch (b.length) {
       case 1:
         return _encloseBasis1(b[0]);
@@ -282,12 +282,12 @@ class BubbleChart {
   }
 
   BubbleNodeBase _encloseBasis2(BubbleNodeBase a, BubbleNodeBase b) {
-    var x1 = a.x;
-    var y1 = a.y;
-    var r1 = a.radius;
-    var x2 = b.x;
-    var y2 = b.y;
-    var r2 = b.radius;
+    var x1 = a.x!;
+    var y1 = a.y!;
+    var r1 = a.radius!;
+    var x2 = b.x!;
+    var y2 = b.y!;
+    var r2 = b.radius!;
     var x21 = x2 - x1;
     var y21 = y2 - y1;
     var r21 = r2 - r1;
@@ -300,15 +300,15 @@ class BubbleChart {
 
   BubbleNodeBase _encloseBasis3(
       BubbleNodeBase a, BubbleNodeBase b, BubbleNodeBase c) {
-    var x1 = a.x;
-    var y1 = a.y;
-    var r1 = a.radius;
-    var x2 = b.x;
-    var y2 = b.y;
-    var r2 = b.radius;
-    var x3 = c.x;
-    var y3 = c.y;
-    var r3 = c.radius;
+    var x1 = a.x!;
+    var y1 = a.y!;
+    var r1 = a.radius!;
+    var x2 = b.x!;
+    var y2 = b.y!;
+    var r2 = b.radius!;
+    var x3 = c.x!;
+    var y3 = c.y!;
+    var r3 = c.radius!;
     var a2 = x1 - x2;
     var a3 = x1 - x3;
     var b2 = y1 - y2;
@@ -361,8 +361,8 @@ class BubbleChart {
 
 class Chain<T> {
   final T node;
-  Chain<T> next;
-  Chain<T> previous;
+  Chain<T>? next;
+  Chain<T>? previous;
 
-  Chain({@required this.node, this.next, this.previous});
+  Chain({required this.node, this.next, this.previous});
 }
