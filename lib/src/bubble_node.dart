@@ -2,47 +2,46 @@ import 'package:bubble_chart/src/bubble_node_base.dart';
 import 'package:flutter/material.dart';
 
 class BubbleNode extends BubbleNodeBase {
-  List<BubbleNode> _children;
-  BubbleOptions options;
-  int _padding;
-  num _value;
-  WidgetBuilder _builder;
-  BubbleNode _parent;
-  double radius;
-  double x = 0;
-  double y = 0;
+  List<BubbleNode>? _children;
+  BubbleOptions? options;
+  int? _padding;
+  num? _value;
+  WidgetBuilder? _builder;
+  BubbleNode? _parent;
+  double? radius;
+  double? x = 0;
+  double? y = 0;
 
-  List<BubbleNode> get children => _children;
-  num get value => _value;
-  int get padding => _padding;
-  WidgetBuilder get builder => _builder;
-  BubbleNode get parent => _parent;
+  List<BubbleNode>? get children => _children;
+  num? get value => _value;
+  int? get padding => _padding;
+  WidgetBuilder? get builder => _builder;
+  BubbleNode? get parent => _parent;
 
   BubbleNode.node({
-    @required List<BubbleNode> children,
+    required List<BubbleNode> children,
     int padding = 0,
     this.options,
   })  : _children = children,
         _padding = padding,
-        assert(children != null && children.length > 0) {
+        assert(children.length > 0) {
     _value = 0;
     for (var child in children) {
-      _value += child.value;
+      _value = _value! + child.value!;
       child._parent = this;
     }
   }
 
   BubbleNode.leaf({
-    @required num value,
-    WidgetBuilder builder,
+    required num value,
+    WidgetBuilder? builder,
     this.options,
   })  : _value = value,
-        _builder = builder,
-        assert(value != null);
+        _builder = builder;
 
   int get depth {
     int depth = 0;
-    BubbleNode parent = _parent;
+    BubbleNode? parent = _parent;
     while (parent != null) {
       parent = parent._parent;
       depth++;
@@ -51,8 +50,8 @@ class BubbleNode extends BubbleNodeBase {
   }
 
   List<BubbleNode> get leaves {
-    var leafs = List<BubbleNode>();
-    for (var child in children) {
+    var leafs = <BubbleNode>[];
+    for (var child in children!) {
       if (child.children == null) {
         leafs.add(child);
       } else {
@@ -63,20 +62,21 @@ class BubbleNode extends BubbleNodeBase {
   }
 
   List<BubbleNode> get nodes {
-    var nodes = List<BubbleNode>();
-    for (var child in children) {
+    var nodes = <BubbleNode>[];
+    for (var child in children!) {
       nodes.add(child);
-      if (child.children != null && child.children.isNotEmpty)
+      if (child.children != null && child.children!.isNotEmpty)
         nodes.addAll(child.nodes);
     }
     return nodes;
   }
 
   eachBefore(Function(BubbleNode) callback) {
-    var node = this;
+    BubbleNode node = this;
     var nodes = [node];
 
-    while (nodes.isNotEmpty && (node = nodes.removeLast()) != null) {
+    while (nodes.isNotEmpty) {
+      node = nodes.removeLast();
       callback(node);
       var children = node.children;
       if (children != null) {
@@ -86,11 +86,12 @@ class BubbleNode extends BubbleNodeBase {
   }
 
   eachAfter(Function(BubbleNode) callback) {
-    var node = this;
+    BubbleNode node = this;
     var nodes = [node];
-    var next = List<BubbleNode>();
+    var next = [];
 
-    while (nodes.isNotEmpty && (node = nodes.removeLast()) != null) {
+    while (nodes.isNotEmpty) {
+      node = nodes.removeLast();
       next.add(node);
       var children = node.children;
       if (children != null) {
@@ -105,10 +106,10 @@ class BubbleNode extends BubbleNodeBase {
 }
 
 class BubbleOptions {
-  final Color color;
-  final BoxBorder border;
-  final Widget child;
-  final GestureTapCallback onTap;
+  final Color? color;
+  final BoxBorder? border;
+  final Widget? child;
+  final GestureTapCallback? onTap;
 
   BubbleOptions({
     this.color,
