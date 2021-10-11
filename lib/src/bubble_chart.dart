@@ -21,7 +21,7 @@ class BubbleChart {
     required this.root,
     required this.size,
     this.radius,
-  })  : assert(root.children!.length > 0),
+  })  : assert(root.children.length > 0),
         assert(size.width > 0 && size.height > 0) {
     root.x = size.width / 2;
     root.y = size.height / 2;
@@ -43,20 +43,20 @@ class BubbleChart {
 
   Function(BubbleNode) _radiusLeaf(double Function(BubbleNode)? radius) {
     return (BubbleNode node) {
-      if (node.children == null || node.children!.isEmpty) {
+      if (node.children.isEmpty) {
         node.radius = max(0, radius!(node));
       }
     };
   }
 
   double _defaultRadius(BubbleNode node) {
-    return sqrt(node.value!);
+    return sqrt(node.value);
   }
 
   _packChildren(double k, [int? padding]) {
     return (BubbleNode node) {
       var children = node.children;
-      if (children != null && children.isNotEmpty) {
+      if (children.isNotEmpty) {
         var r = (padding ?? node.padding)! * k;
 
         if (r != 0) {
@@ -327,7 +327,7 @@ class BubbleChart {
     var dB = 2 * (r1 + xa * xb + ya * yb);
     var dC = xa * xa + ya * ya - r1 * r1;
     var r =
-        -(dA != 0 ? (dB + sqrt(dB * dB - 4 * dA * dC)) / (2 * dA) : dC / dB);
+    -(dA != 0 ? (dB + sqrt(dB * dB - 4 * dA * dC)) / (2 * dA) : dC / dB);
     return BubbleNodeBase(x: x1 + xa + xb * r, y: y1 + ya + yb * r, radius: r);
   }
 
