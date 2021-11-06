@@ -327,7 +327,7 @@ class BubbleChart {
     var dB = 2 * (r1 + xa * xb + ya * yb);
     var dC = xa * xa + ya * ya - r1 * r1;
     var r =
-    -(dA != 0 ? (dB + sqrt(dB * dB - 4 * dA * dC)) / (2 * dA) : dC / dB);
+        -(dA != 0 ? (dB + sqrt(dB * dB - 4 * dA * dC)) / (2 * dA) : dC / dB);
     return BubbleNodeBase(x: x1 + xa + xb * r, y: y1 + ya + yb * r, radius: r);
   }
 

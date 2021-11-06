@@ -20,18 +20,23 @@ class BubbleNode extends BubbleNodeBase {
     required List<BubbleNode> children,
     int padding = 0,
     this.options,
-  }): assert(children.length > 0) {
+  }) : assert(children.length > 0) {
     this._children = children;
     this._padding = padding;
   }
 
-
   List<BubbleNode> get children {
-    return this._children?.map((e) { e._parent = this; return e;}).toList() ?? [];
+    return this._children?.map((e) {
+          e._parent = this;
+          return e;
+        }).toList() ??
+        [];
   }
 
   num get value {
-    if (_staticValue != null) { return _staticValue!; }
+    if (_staticValue != null) {
+      return _staticValue!;
+    }
     num value = 0;
     for (var child in _children!) {
       value += child.value;
@@ -76,8 +81,7 @@ class BubbleNode extends BubbleNodeBase {
     var nodes = <BubbleNode>[];
     for (var child in children) {
       nodes.add(child);
-      if (child.children.isNotEmpty)
-        nodes.addAll(child.nodes);
+      if (child.children.isNotEmpty) nodes.addAll(child.nodes);
     }
     return nodes;
   }

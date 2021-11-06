@@ -29,7 +29,6 @@ class BubbleLayer extends StatelessWidget {
               child: bubble!.options?.child ?? Container(),
             ),
           ),
-        )
-    );
+        ));
   }
 }

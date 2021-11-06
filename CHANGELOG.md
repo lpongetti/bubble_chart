@@ -1,3 +1,7 @@
+## [0.3.1] - 06/11/2021
+
+- Add state changes and animation support #6
+
 ## [0.3.0] - 06/06/2019
 
 - Null safety
