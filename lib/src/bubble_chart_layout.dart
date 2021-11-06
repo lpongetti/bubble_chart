@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 class BubbleChartLayout extends StatelessWidget {
   final BubbleNode root;
   final double Function(BubbleNode)? radius;
+  final Duration? duration;
 
   BubbleChartLayout({
     required this.root,
     this.radius,
+    this.duration,
   });
 
   @override
@@ -26,11 +28,21 @@ class BubbleChartLayout extends StatelessWidget {
           children: bubbles.nodes.fold([], (result, node) {
             return result
               ..add(
+                duration == null ?
                 Positioned(
                   top: node.y! - node.radius!,
                   left: node.x! - node.radius!,
                   width: node.radius! * 2,
                   height: node.radius! * 2,
+                  child: BubbleLayer(bubble: node),
+                )
+                    :
+                AnimatedPositioned(
+                  top: node.y! - node.radius!,
+                  left: node.x! - node.radius!,
+                  width: node.radius! * 2,
+                  height: node.radius! * 2,
+                  duration: duration ?? Duration(milliseconds: 300),
                   child: BubbleLayer(bubble: node),
                 ),
               );

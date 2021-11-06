@@ -1,55 +1,9 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:bubble_chart/bubble_chart.dart';
 import 'package:flutter/material.dart';
 
-final root = BubbleNode.node(
-  padding: 15,
-  children: [
-    BubbleNode.node(
-      padding: 30,
-      children: [
-        BubbleNode.leaf(
-          options: BubbleOptions(
-            color: Colors.brown,
-          ),
-          value: 2583,
-        ),
-        BubbleNode.leaf(
-          options: BubbleOptions(
-            color: Colors.brown,
-          ),
-          value: 4159,
-        ),
-        BubbleNode.leaf(
-          options: BubbleOptions(
-            color: Colors.brown,
-          ),
-          value: 4159,
-        ),
-      ],
-    ),
-    BubbleNode.leaf(
-      value: 4159,
-    ),
-    BubbleNode.leaf(
-      value: 2074,
-    ),
-    BubbleNode.leaf(
-      value: 4319,
-    ),
-    BubbleNode.leaf(
-      value: 2074,
-    ),
-    BubbleNode.leaf(
-      value: 2074,
-    ),
-    BubbleNode.leaf(
-      value: 2074,
-    ),
-    BubbleNode.leaf(
-      value: 2074,
-    ),
-  ],
-);
 
 void main() => runApp(MyApp());
 
@@ -68,17 +22,67 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List<BubbleNode> childNode = [];
+  late BubbleNode root;
+
+  @override
+  void initState() {
+    super.initState();
+    _addNewNode();
+    root = BubbleNode.node(
+      padding: 15,
+      children: childNode,
+    );
+    // Timer.periodic(Duration(milliseconds: 500), (_) {
+    //   _addNewNode();
+    // });
+  }
+
+  _addNewNode() {
+    setState(() {
+      Random random = Random();
+      BubbleNode node = BubbleNode.leaf(
+        value: max(1, random.nextInt(10)),
+        options: BubbleOptions(
+          color: () {
+            Random random = Random();
+            return Colors.primaries[random.nextInt(Colors.primaries.length)];
+          }(),
+        ),
+      );
+      node.options?.onTap = () {
+        setState(() {
+          childNode[childNode.indexOf(node)].value += 1;
+        });
+      };
+      childNode.add(node);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        height: 600,
-        width: 600,
         child: BubbleChartLayout(
           root: root,
+          duration: Duration(milliseconds: 500),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Text("+"),
+        onPressed: () {
+          _addNewNode();
+        },
       ),
     );
   }
 }
+
