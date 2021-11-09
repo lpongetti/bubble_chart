@@ -37,7 +37,29 @@ class _MyHomePageState extends State<MyHomePage> {
     _addNewNode();
     root = BubbleNode.node(
       padding: 15,
-      children: childNode,
+      children: [
+        BubbleNode.node(
+          padding: 15,
+          children: childNode,
+          options: BubbleOptions(color: Colors.black),
+        ),
+        BubbleNode.node(
+          padding: 15,
+          children: [
+            BubbleNode.leaf(
+              value: 5,
+              options: BubbleOptions(
+                color: () {
+                  Random random = Random();
+                  return Colors
+                      .primaries[random.nextInt(Colors.primaries.length)];
+                }(),
+              ),
+            )
+          ],
+          options: BubbleOptions(color: Colors.black),
+        ),
+      ],
     );
     // Timer.periodic(Duration(milliseconds: 500), (_) {
     //   _addNewNode();
