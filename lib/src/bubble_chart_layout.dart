@@ -6,13 +6,11 @@ class BubbleChartLayout extends StatelessWidget {
   final List<BubbleNode> children;
   final double Function(BubbleNode)? radius;
   final Duration? duration;
-  final int padding;
 
   BubbleChartLayout({
     required this.children,
     this.radius,
     this.duration,
-    this.padding = 0,
   });
 
   @override
@@ -20,7 +18,7 @@ class BubbleChartLayout extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         var bubbles = BubbleChart(
-          root: BubbleNode.node(children: children, padding: this.padding),
+          root: BubbleNode.node(children: children),
           radius: radius,
           size: Size(constraints.maxWidth, constraints.maxHeight),
         );

@@ -66,7 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Container(
         child: BubbleChartLayout(
-          padding: 10,
           children: [
             BubbleNode.node(
               padding: 15,
