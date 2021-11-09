@@ -3,14 +3,16 @@ import 'package:bubble_chart/src/bubble_layer.dart';
 import 'package:flutter/material.dart';
 
 class BubbleChartLayout extends StatelessWidget {
-  final BubbleNode root;
+  final List<BubbleNode> children;
   final double Function(BubbleNode)? radius;
   final Duration? duration;
+  final int padding;
 
   BubbleChartLayout({
-    required this.root,
+    required this.children,
     this.radius,
     this.duration,
+    this.padding = 0,
   });
 
   @override
@@ -18,7 +20,7 @@ class BubbleChartLayout extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         var bubbles = BubbleChart(
-          root: root,
+          root: BubbleNode.node(children: children, padding: this.padding),
           radius: radius,
           size: Size(constraints.maxWidth, constraints.maxHeight),
         );

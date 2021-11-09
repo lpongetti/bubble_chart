@@ -21,7 +21,7 @@ class BubbleChart {
     required this.root,
     required this.size,
     this.radius,
-  })  : assert(root.children.length > 0),
+  })  : assert(root.children != null && root.children!.length > 0),
         assert(size.width > 0 && size.height > 0) {
     root.x = size.width / 2;
     root.y = size.height / 2;
@@ -43,7 +43,7 @@ class BubbleChart {
 
   Function(BubbleNode) _radiusLeaf(double Function(BubbleNode)? radius) {
     return (BubbleNode node) {
-      if (node.children.isEmpty) {
+      if (node.children == null) {
         node.radius = max(0, radius!(node));
       }
     };
@@ -56,7 +56,7 @@ class BubbleChart {
   _packChildren(double k, [int? padding]) {
     return (BubbleNode node) {
       var children = node.children;
-      if (children.isNotEmpty) {
+      if (children != null) {
         var r = (padding ?? node.padding)! * k;
 
         if (r != 0) {

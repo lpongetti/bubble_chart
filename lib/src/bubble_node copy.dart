@@ -2,73 +2,86 @@ import 'package:bubble_chart/src/bubble_node_base.dart';
 import 'package:flutter/material.dart';
 
 class BubbleNode extends BubbleNodeBase {
-  num _value = 0;
-  List<BubbleNode>? children;
+  List<BubbleNode>? _children;
   BubbleOptions? options;
-  int? padding;
-  WidgetBuilder? builder;
-  BubbleNode? parent;
+  int? _padding;
+  num? _staticValue;
+  WidgetBuilder? _builder;
+  BubbleNode? _parent;
   double? radius;
   double? x = 0;
   double? y = 0;
 
-  num get value {
-    if (children == null) {
-      return _value;
-    }
-    return children!.fold(0, (a, b) => a + b.value);
-  }
-
-  set value(num newValue) {
-    if (children == null) {
-      _value = newValue;
-    }
-  }
+  int? get padding => _padding;
+  WidgetBuilder? get builder => _builder;
+  BubbleNode? get parent => _parent;
 
   BubbleNode.node({
-    required this.children,
-    this.padding = 0,
+    required List<BubbleNode> children,
+    int padding = 0,
     this.options,
-  }) : assert(children != null && children.length > 0) {
-    for (var child in children!) {
-      this._value += child.value;
-      child.parent = this;
+  }) : assert(children.length > 0) {
+    this._children = children;
+    this._padding = padding;
+  }
+
+  List<BubbleNode> get children {
+    return this._children?.map((e) {
+          e._parent = this;
+          return e;
+        }).toList() ??
+        [];
+  }
+
+  num get value {
+    if (_staticValue != null) {
+      return _staticValue!;
     }
+    num value = 0;
+    for (var child in _children!) {
+      value += child.value;
+    }
+    return value;
+  }
+
+  set value(num value) {
+    this._staticValue = value;
   }
 
   BubbleNode.leaf({
     required num value,
-    this.builder,
+    WidgetBuilder? builder,
     this.options,
-  }) : _value = value;
+  })  : _staticValue = value,
+        _builder = builder;
 
   int get depth {
     int depth = 0;
-    BubbleNode? dparent = parent;
-    while (dparent != null) {
-      dparent = dparent.parent;
+    BubbleNode? parent = _parent;
+    while (parent != null) {
+      parent = parent._parent;
       depth++;
     }
     return depth;
   }
 
   List<BubbleNode> get leaves {
-    var leaves = <BubbleNode>[];
-    for (var child in children!) {
-      if (child.children == null) {
-        leaves.add(child);
+    var leafs = <BubbleNode>[];
+    for (var child in children) {
+      if (child.children.isEmpty) {
+        leafs.add(child);
       } else {
-        leaves.addAll([child, ...child.leaves]);
+        leafs.addAll(child.leaves);
       }
     }
-    return leaves;
+    return leafs;
   }
 
   List<BubbleNode> get nodes {
     var nodes = <BubbleNode>[];
-    for (var child in children!) {
+    for (var child in children) {
       nodes.add(child);
-      if (child.children != null) nodes.addAll(child.nodes);
+      if (child.children.isNotEmpty) nodes.addAll(child.nodes);
     }
     return nodes;
   }
@@ -81,7 +94,7 @@ class BubbleNode extends BubbleNodeBase {
       node = nodes.removeLast();
       callback(node);
       var children = node.children;
-      if (children != null) {
+      if (children.isNotEmpty) {
         nodes.addAll(children.reversed);
       }
     }
@@ -96,7 +109,7 @@ class BubbleNode extends BubbleNodeBase {
       node = nodes.removeLast();
       next.add(node);
       var children = node.children;
-      if (children != null) {
+      if (children.isNotEmpty) {
         nodes.addAll(children);
       }
     }

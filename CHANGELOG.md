@@ -1,3 +1,7 @@
+## [0.4.0] - 09/11/2021
+
+- Refactor
+
 ## [0.3.1] - 06/11/2021
 
 - Add state changes and animation support #6
