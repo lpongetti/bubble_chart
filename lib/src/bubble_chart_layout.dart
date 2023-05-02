@@ -6,11 +6,14 @@ class BubbleChartLayout extends StatelessWidget {
   final List<BubbleNode> children;
   final double Function(BubbleNode)? radius;
   final Duration? duration;
+  // Stretch factor determines the width:height ratio of the chart
+  final double stretchFactor;
 
   BubbleChartLayout({
     required this.children,
     this.radius,
     this.duration,
+    this.stretchFactor = 1.0,
   });
 
   @override
@@ -21,6 +24,7 @@ class BubbleChartLayout extends StatelessWidget {
           root: BubbleNode.node(children: children),
           radius: radius,
           size: Size(constraints.maxWidth, constraints.maxHeight),
+          stretchFactor: stretchFactor,
         );
 
         return Stack(

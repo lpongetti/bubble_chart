@@ -8,6 +8,8 @@ class BubbleChart {
   final BubbleNode root;
   final Size size;
   final double Function(BubbleNode)? radius;
+  // Stretch factor determines the width:height ratio of the chart
+  final double stretchFactor;
 
   List<BubbleNode> get leaves {
     return root.leaves;
@@ -21,6 +23,7 @@ class BubbleChart {
     required this.root,
     required this.size,
     this.radius,
+    this.stretchFactor = 1.0,
   })  : assert(root.children != null && root.children!.length > 0),
         assert(size.width > 0 && size.height > 0) {
     root.x = size.width / 2;
@@ -218,7 +221,7 @@ class BubbleChart {
         ab = a.radius! + b.radius!,
         dx = (a.x! * b.radius! + b.x! * a.radius!) / ab,
         dy = (a.y! * b.radius! + b.y! * a.radius!) / ab;
-    return dx * dx + dy * dy;
+    return dx * dx + dy * dy * stretchFactor;
   }
 
   BubbleNodeBase? _enclose(List<BubbleNodeBase> children) {
