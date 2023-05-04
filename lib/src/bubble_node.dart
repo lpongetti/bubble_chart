@@ -2,6 +2,7 @@ import 'package:bubble_chart/src/bubble_node_base.dart';
 import 'package:flutter/material.dart';
 
 class BubbleNode extends BubbleNodeBase {
+  Key? key;
   num _value = 0;
   List<BubbleNode>? children;
   BubbleOptions? options;
@@ -38,6 +39,7 @@ class BubbleNode extends BubbleNodeBase {
 
   BubbleNode.leaf({
     required num value,
+    this.key,
     this.builder,
     this.options,
   }) : _value = value;

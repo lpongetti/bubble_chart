@@ -33,6 +33,7 @@ class BubbleChartLayout extends StatelessWidget {
               ..add(
                 duration == null
                     ? Positioned(
+                        key: node.key,
                         top: node.y! - node.radius!,
                         left: node.x! - node.radius!,
                         width: node.radius! * 2,
@@ -40,6 +41,7 @@ class BubbleChartLayout extends StatelessWidget {
                         child: BubbleLayer(bubble: node),
                       )
                     : AnimatedPositioned(
+                        key: node.key,
                         top: node.y! - node.radius!,
                         left: node.x! - node.radius!,
                         width: node.radius! * 2,
