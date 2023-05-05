@@ -39,8 +39,9 @@ class BubbleChart {
         ..leaves.forEach(_radiusLeaf(_defaultRadius))
         ..eachAfter(_packChildren(1, 0))
         ..eachAfter(_packChildren(root.radius! / min(size.width, size.height)))
-        ..eachBefore(
-            _translateChild(min(size.width, size.height) / (2 * root.radius!)));
+        ..eachBefore(_translateChild(
+            min(size.width, size.height * sqrt(stretchFactor)) /
+                (2 * root.radius!)));
     }
   }
 
