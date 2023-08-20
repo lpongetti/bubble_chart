@@ -29,19 +29,71 @@ class BubbleChart {
     root.x = size.width / 2;
     root.y = size.height / 2;
 
-    if (radius != null) {
-      root
-        ..leaves.forEach(_radiusLeaf(radius))
-        ..eachAfter(_packChildren(0.5))
-        ..eachBefore(_translateChild(1));
-    } else {
-      root
-        ..leaves.forEach(_radiusLeaf(_defaultRadius))
-        ..eachAfter(_packChildren(1, 0))
-        ..eachAfter(_packChildren(root.radius! / min(size.width, size.height)))
-        ..eachBefore(_translateChild(
-            min(size.width, size.height * sqrt(stretchFactor)) /
-                (2 * root.radius!)));
+    if (root.children != null) {
+      root..leaves.forEach(_radiusLeaf(_defaultRadius));
+      _packEnclose(root.children!);
+      print(root.children);
+      _translateAndScale(root.children!);
+      print(root.children);
+    }
+
+    // if (radius != null) {
+    //   root
+    //     ..leaves.forEach(_radiusLeaf(radius))
+    //     ..eachAfter(_packChildren(0.5))
+    //     ..eachBefore(_translateChild(1));
+    // } else {
+    //   root
+    //     ..leaves.forEach(_radiusLeaf(_defaultRadius))
+    //     ..eachAfter(_packChildren(1, 0))
+    //     ..eachAfter(_packChildren(root.radius! / min(size.width, size.height)))
+    //     ..eachBefore(
+    //         _translateChild(min(size.width, size.height) / (2 * root.radius!)));
+    // }
+  }
+
+  _translateAndScale(List<BubbleNode> circles) {
+    double xmin = double.infinity;
+    double xmax = -double.infinity;
+    double ymin = double.infinity;
+    double ymax = -double.infinity;
+
+    circles.forEach((circle) {
+      final left = circle.x! - circle.radius!;
+      final right = circle.x! + circle.radius!;
+      final top = circle.y! - circle.radius!;
+      final bottom = circle.y! + circle.radius!;
+
+      if (left < xmin) {
+        xmin = left;
+      }
+      if (right > xmax) {
+        xmax = right;
+      }
+      if (top < ymin) {
+        ymin = top;
+      }
+      if (bottom > ymax) {
+        ymax = bottom;
+      }
+    });
+
+    final scaleX = size.width / (xmax - xmin);
+    final scaleY = size.height / (ymax - ymin);
+
+    final scale = min(scaleX, scaleY);
+
+    // Calculate the extra space after scaling.
+    // TODO: Make this for vertical and horizontal
+    double extraSpace = size.width - (xmax - xmin) * scale;
+
+    for (final circle in circles) {
+      // Translate, scale the x and y coordinates, and center align.
+      circle.x = (circle.x! - xmin) * scale + extraSpace / 2;
+      circle.y = (circle.y! - ymin) * scale;
+
+      // Scale the radius.
+      circle.radius = circle.radius! * scale;
     }
   }
 
@@ -217,12 +269,15 @@ class BubbleChart {
   }
 
   _score(Chain<BubbleNode> chain) {
+    final height = size.height;
+    final width = size.width;
+
     var a = chain.node,
         b = chain.next!.node,
         ab = a.radius! + b.radius!,
         dx = (a.x! * b.radius! + b.x! * a.radius!) / ab,
         dy = (a.y! * b.radius! + b.y! * a.radius!) / ab;
-    return dx * dx + dy * dy * stretchFactor;
+    return max(dx.abs() * height, dy.abs() * width);
   }
 
   BubbleNodeBase? _enclose(List<BubbleNodeBase> children) {
