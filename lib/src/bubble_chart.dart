@@ -83,15 +83,28 @@ class BubbleChart {
 
     // Calculate the extra space after scaling.
     // TODO: Make this for vertical and horizontal
-    double extraSpace = size.width - (xmax - xmin) * scale;
 
-    for (final circle in circles) {
+    if (scaleX < scaleY) {
+      final extraVerticalSpace = size.height - (ymax - ymin) * scale;
       // Translate, scale the x and y coordinates, and center align.
-      circle.x = (circle.x! - xmin) * scale + extraSpace / 2;
-      circle.y = (circle.y! - ymin) * scale;
+      for (final circle in circles) {
+        circle.x = (circle.x! - xmin) * scale;
+        circle.y = (circle.y! - ymin) * scale + extraVerticalSpace / 2;
 
-      // Scale the radius.
-      circle.radius = circle.radius! * scale;
+        // Scale the radius.
+        circle.radius = circle.radius! * scale;
+      }
+    } else {
+      final extraHorizontalSpace = size.width - (xmax - xmin) * scale;
+
+      // Translate, scale the x and y coordinates, and center align.
+      for (final circle in circles) {
+        circle.x = (circle.x! - xmin) * scale + extraHorizontalSpace / 2;
+        circle.y = (circle.y! - ymin) * scale;
+
+        // Scale the radius.
+        circle.radius = circle.radius! * scale;
+      }
     }
   }
 
