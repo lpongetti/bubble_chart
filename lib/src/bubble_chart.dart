@@ -32,9 +32,7 @@ class BubbleChart {
     if (root.children != null) {
       root..leaves.forEach(_radiusLeaf(_defaultRadius));
       _packEnclose(root.children!);
-      print(root.children);
       _translateAndScale(root.children!);
-      print(root.children);
     }
 
     // if (radius != null) {
