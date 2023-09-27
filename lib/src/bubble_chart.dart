@@ -8,8 +8,7 @@ class BubbleChart {
   final BubbleNode root;
   final Size size;
   final double Function(BubbleNode)? radius;
-  // Stretch factor determines the width:height ratio of the chart
-  final double stretchFactor;
+  final bool isBubbleApp;
 
   List<BubbleNode> get leaves {
     return root.leaves;
@@ -23,7 +22,7 @@ class BubbleChart {
     required this.root,
     required this.size,
     this.radius,
-    this.stretchFactor = 1.0,
+    this.isBubbleApp = true,
   })  : assert(root.children != null && root.children!.length > 0),
         assert(size.width > 0 && size.height > 0) {
     root.x = size.width / 2;
@@ -33,6 +32,17 @@ class BubbleChart {
       root..leaves.forEach(_radiusLeaf(_defaultRadius));
       _packEnclose(root.children!);
       _translateAndScale(root.children!);
+    }
+
+    // In 2 Child case, we want it to be top aligned in the app
+    // Do it only in our phone app
+    if (root.children?.length == 2 && !isBubbleApp) {
+      _moveChildrenToTop(root.children!);
+    }
+
+    // In 4 Child case, we want to rotate 90
+    if (root.children?.length == 4) {
+      _rotateSideways(root.children!);
     }
 
     // if (radius != null) {
@@ -426,6 +436,30 @@ class BubbleChart {
 
     // If we get here then something is very wrong.
     throw new Error();
+  }
+
+  // Change the y coordinate of the bubbles so that it's aligned to
+  // top instead of center
+  void _moveChildrenToTop(List<BubbleNode> circles) {
+    circles.forEach((circle) {
+      circle.y = circle.radius;
+    });
+  }
+
+  /// To rotate about a point (cx, cy) we've to
+  /// Translate by (-cx, -cy)
+  /// Rotate (x, y) -> (-y, x)
+  /// Translate by (cx, cy)
+  /// This has been condensed in the code below
+  void _rotateSideways(List<BubbleNode> circles) {
+    final cx = root.x!;
+    final cy = root.y!;
+
+    circles.forEach((circle) {
+      final tempX = circle.x!;
+      circle.x = -circle.y! + cx + cy;
+      circle.y = tempX - cx + cy;
+    });
   }
 }
 
