@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:bubble_chart/bubble_chart.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
@@ -24,7 +26,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -64,36 +66,36 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: BubbleChartLayout(
-          children: [
-            BubbleNode.node(
-              padding: 15,
-              children: childNode,
-              options: BubbleOptions(color: Colors.black),
-            ),
-            BubbleNode.node(
-              padding: 15,
-              children: [
-                BubbleNode.leaf(
-                  value: 5,
-                  options: BubbleOptions(
-                    color: () {
-                      Random random = Random();
-                      return Colors
-                          .primaries[random.nextInt(Colors.primaries.length)];
-                    }(),
-                  ),
-                )
-              ],
-              options: BubbleOptions(color: Colors.black),
-            ),
-          ],
-          duration: Duration(milliseconds: 500),
-        ),
+      body: BubbleChartLayout(
+        radius: (p0) => 5,
+        isbubbleApp: true,
+        children: [
+          BubbleNode.node(
+            padding: 15,
+            children: childNode,
+            options: BubbleOptions(color: Colors.black),
+          ),
+          BubbleNode.node(
+            padding: 15,
+            children: [
+              BubbleNode.leaf(
+                value: 5,
+                options: BubbleOptions(
+                  color: () {
+                    Random random = Random();
+                    return Colors
+                        .primaries[random.nextInt(Colors.primaries.length)];
+                  }(),
+                ),
+              )
+            ],
+            options: BubbleOptions(color: Colors.black),
+          ),
+        ],
+        duration: const Duration(milliseconds: 500),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Text("+"),
+        child: const Text("+"),
         onPressed: () {
           _addNewNode();
         },

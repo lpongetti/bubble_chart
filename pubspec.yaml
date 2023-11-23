@@ -3,16 +3,18 @@ description:
   A simple Dart implementation of bubble chart.
   It creates bubbles in random points and collide its all to container center.
   Can be implemented with any features.
-version: 0.4.0
+version: 0.5.0
 
 homepage: https://github.com/lpongetti/bubble_chart
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=3.1.5 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
+
+  flutter_lints: ^2.0.0
 
 dev_dependencies:
   flutter_test:
