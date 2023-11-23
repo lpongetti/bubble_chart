@@ -8,7 +8,6 @@ class BubbleChart {
   final BubbleNode root;
   final Size size;
   final double Function(BubbleNode)? radius;
-  final bool isBubbleApp;
 
   List<BubbleNode> get leaves {
     return root.leaves;
@@ -22,99 +21,23 @@ class BubbleChart {
     required this.root,
     required this.size,
     this.radius,
-    this.isBubbleApp = true,
   })  : assert(root.children != null && root.children!.length > 0),
         assert(size.width > 0 && size.height > 0) {
     root.x = size.width / 2;
     root.y = size.height / 2;
 
-    if (root.children != null) {
-      root..leaves.forEach(_radiusLeaf(_defaultRadius));
-      _packEnclose(root.children!);
-      _translateAndScale(root.children!);
-    }
-
-    // In 2 Child case, we want it to be top aligned in the app
-    // Do it only in our phone app
-    if (root.children?.length == 2 && !isBubbleApp) {
-      _moveChildrenToTop(root.children!);
-    }
-
-    // In 4 Child case, we want to rotate 90
-    if (root.children?.length == 4) {
-      _rotateSideways(root.children!);
-    }
-
-    // if (radius != null) {
-    //   root
-    //     ..leaves.forEach(_radiusLeaf(radius))
-    //     ..eachAfter(_packChildren(0.5))
-    //     ..eachBefore(_translateChild(1));
-    // } else {
-    //   root
-    //     ..leaves.forEach(_radiusLeaf(_defaultRadius))
-    //     ..eachAfter(_packChildren(1, 0))
-    //     ..eachAfter(_packChildren(root.radius! / min(size.width, size.height)))
-    //     ..eachBefore(
-    //         _translateChild(min(size.width, size.height) / (2 * root.radius!)));
-    // }
-  }
-
-  _translateAndScale(List<BubbleNode> circles) {
-    double xmin = double.infinity;
-    double xmax = -double.infinity;
-    double ymin = double.infinity;
-    double ymax = -double.infinity;
-
-    circles.forEach((circle) {
-      final left = circle.x! - circle.radius!;
-      final right = circle.x! + circle.radius!;
-      final top = circle.y! - circle.radius!;
-      final bottom = circle.y! + circle.radius!;
-
-      if (left < xmin) {
-        xmin = left;
-      }
-      if (right > xmax) {
-        xmax = right;
-      }
-      if (top < ymin) {
-        ymin = top;
-      }
-      if (bottom > ymax) {
-        ymax = bottom;
-      }
-    });
-
-    final scaleX = size.width / (xmax - xmin);
-    final scaleY = size.height / (ymax - ymin);
-
-    final scale = min(scaleX, scaleY);
-
-    // Calculate the extra space after scaling.
-    // TODO: Make this for vertical and horizontal
-
-    if (scaleX < scaleY) {
-      final extraVerticalSpace = size.height - (ymax - ymin) * scale;
-      // Translate, scale the x and y coordinates, and center align.
-      for (final circle in circles) {
-        circle.x = (circle.x! - xmin) * scale;
-        circle.y = (circle.y! - ymin) * scale + extraVerticalSpace / 2;
-
-        // Scale the radius.
-        circle.radius = circle.radius! * scale;
-      }
+    if (radius != null) {
+      root
+        ..leaves.forEach(_radiusLeaf(radius))
+        ..eachAfter(_packChildren(0.5))
+        ..eachBefore(_translateChild(1));
     } else {
-      final extraHorizontalSpace = size.width - (xmax - xmin) * scale;
-
-      // Translate, scale the x and y coordinates, and center align.
-      for (final circle in circles) {
-        circle.x = (circle.x! - xmin) * scale + extraHorizontalSpace / 2;
-        circle.y = (circle.y! - ymin) * scale;
-
-        // Scale the radius.
-        circle.radius = circle.radius! * scale;
-      }
+      root
+        ..leaves.forEach(_radiusLeaf(_defaultRadius))
+        ..eachAfter(_packChildren(1, 0))
+        ..eachAfter(_packChildren(root.radius! / min(size.width, size.height)))
+        ..eachBefore(
+            _translateChild(min(size.width, size.height) / (2 * root.radius!)));
     }
   }
 
@@ -290,15 +213,12 @@ class BubbleChart {
   }
 
   _score(Chain<BubbleNode> chain) {
-    final height = size.height;
-    final width = size.width;
-
     var a = chain.node,
         b = chain.next!.node,
         ab = a.radius! + b.radius!,
         dx = (a.x! * b.radius! + b.x! * a.radius!) / ab,
         dy = (a.y! * b.radius! + b.y! * a.radius!) / ab;
-    return max(dx.abs() * height, dy.abs() * width);
+    return dx * dx + dy * dy;
   }
 
   BubbleNodeBase? _enclose(List<BubbleNodeBase> children) {
@@ -436,30 +356,6 @@ class BubbleChart {
 
     // If we get here then something is very wrong.
     throw new Error();
-  }
-
-  // Change the y coordinate of the bubbles so that it's aligned to
-  // top instead of center
-  void _moveChildrenToTop(List<BubbleNode> circles) {
-    circles.forEach((circle) {
-      circle.y = circle.radius;
-    });
-  }
-
-  /// To rotate about a point (cx, cy) we've to
-  /// Translate by (-cx, -cy)
-  /// Rotate (x, y) -> (-y, x)
-  /// Translate by (cx, cy)
-  /// This has been condensed in the code below
-  void _rotateSideways(List<BubbleNode> circles) {
-    final cx = root.x!;
-    final cy = root.y!;
-
-    circles.forEach((circle) {
-      final tempX = circle.x!;
-      circle.x = -circle.y! + cx + cy;
-      circle.y = tempX - cx + cy;
-    });
   }
 }
 
