@@ -9,9 +9,6 @@ class BubbleNode extends BubbleNodeBase {
   int? padding;
   WidgetBuilder? builder;
   BubbleNode? parent;
-  double? radius;
-  double? x = 0;
-  double? y = 0;
 
   num get value {
     if (children == null) {
@@ -30,9 +27,9 @@ class BubbleNode extends BubbleNodeBase {
     required this.children,
     this.padding = 0,
     this.options,
-  }) : assert(children != null && children.length > 0) {
+  }) : assert(children != null && children.isNotEmpty) {
     for (var child in children!) {
-      this._value += child.value;
+      _value += child.value;
       child.parent = this;
     }
   }

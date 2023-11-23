@@ -24,7 +24,7 @@ class BubbleChart {
     required this.size,
     this.radius,
     this.stretchFactor = 1.0,
-  })  : assert(root.children != null && root.children!.length > 0),
+  })  : assert(root.children != null && root.children!.isNotEmpty),
         assert(size.width > 0 && size.height > 0) {
     root.x = size.width / 2;
     root.y = size.height / 2;
@@ -63,11 +63,15 @@ class BubbleChart {
         var r = (padding ?? node.padding)! * k;
 
         if (r != 0) {
-          for (var child in children) child.radius = child.radius! + r;
+          for (var child in children) {
+            child.radius = child.radius! + r;
+          }
         }
         var e = _packEnclose(children)!;
         if (r != 0) {
-          for (var child in children) child.radius = child.radius! - r;
+          for (var child in children) {
+            child.radius = child.radius! - r;
+          }
         }
         node.radius = e + r;
       }
@@ -86,7 +90,7 @@ class BubbleChart {
   }
 
   double? _packEnclose(List<BubbleNode> circles) {
-    if (circles.length == 0) return 0;
+    if (circles.isEmpty) return 0;
 
     // Place the first circle.
     var first = circles[0];
@@ -108,9 +112,9 @@ class BubbleChart {
     _place(second, first, other);
 
     // Initialize the front-chain using the first three circles a, b and c.
-    var a = new Chain(node: first);
-    var b = new Chain(node: second);
-    var c = new Chain(node: other);
+    var a = Chain(node: first);
+    var b = Chain(node: second);
+    var c = Chain(node: other);
     a.next = c.previous = b;
     b.next = a.previous = c;
     c.next = b.previous = a;
@@ -120,7 +124,7 @@ class BubbleChart {
     for (var i = 3; i < circles.length; ++i) {
       other = circles[i];
       _place(a.node, b.node, other);
-      c = new Chain(node: other);
+      c = Chain(node: other);
 
       // Find the closest intersecting circle on the front-chain, if any.
       // “Closeness” is determined by linear distance along the front-chain.
@@ -170,7 +174,9 @@ class BubbleChart {
     // Compute the enclosing circle of the front chain.
     var ra = [b.node];
     c = b;
-    while ((c = c.next!) != b) ra.add(c.node);
+    while ((c = c.next!) != b) {
+      ra.add(c.node);
+    }
     var f = _enclose(ra)!;
 
     // Translate the circles to put the enclosing circle around the origin.
@@ -225,9 +231,7 @@ class BubbleChart {
   }
 
   BubbleNodeBase? _enclose(List<BubbleNodeBase> children) {
-    var circles = <BubbleNodeBase>[]
-      ..addAll(children)
-      ..shuffle();
+    var circles = <BubbleNodeBase>[...children]..shuffle();
 
     BubbleNodeBase? e;
     var dB = <BubbleNodeBase>[];
@@ -358,7 +362,7 @@ class BubbleChart {
     }
 
     // If we get here then something is very wrong.
-    throw new Error();
+    throw Error();
   }
 }
 

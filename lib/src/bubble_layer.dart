@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class BubbleLayer extends StatelessWidget {
   final BubbleNode? bubble;
 
-  const BubbleLayer({this.bubble});
+  const BubbleLayer({super.key, this.bubble});
 
   onTap() {
     if (bubble?.options?.onTap != null) bubble?.options?.onTap!();
@@ -21,7 +21,7 @@ class BubbleLayer extends StatelessWidget {
             width: bubble!.radius! * 2,
             height: bubble!.radius! * 2,
             decoration: BoxDecoration(
-              border: bubble!.options?.border ?? Border(),
+              border: bubble!.options?.border ?? const Border(),
               color: bubble!.options?.color ?? Theme.of(context).primaryColor,
               shape: BoxShape.circle,
             ),

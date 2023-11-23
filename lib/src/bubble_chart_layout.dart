@@ -9,7 +9,8 @@ class BubbleChartLayout extends StatelessWidget {
   // Stretch factor determines the width:height ratio of the chart
   final double stretchFactor;
 
-  BubbleChartLayout({
+  const BubbleChartLayout({
+    super.key,
     required this.children,
     this.radius,
     this.duration,
@@ -46,7 +47,7 @@ class BubbleChartLayout extends StatelessWidget {
                         left: node.x! - node.radius!,
                         width: node.radius! * 2,
                         height: node.radius! * 2,
-                        duration: duration ?? Duration(milliseconds: 300),
+                        duration: duration ?? const Duration(milliseconds: 300),
                         child: BubbleLayer(bubble: node),
                       ),
               );

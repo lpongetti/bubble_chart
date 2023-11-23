@@ -1,3 +1,8 @@
+## [0.5.0] - 23/11/2023
+
+- Merge pull request #9 from sodality-tech/master
+- Some fixes
+
 ## [0.4.0] - 09/11/2021
 
 - Refactor
