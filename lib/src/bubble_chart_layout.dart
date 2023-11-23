@@ -6,11 +6,13 @@ class BubbleChartLayout extends StatelessWidget {
   final List<BubbleNode> children;
   final double Function(BubbleNode)? radius;
   final Duration? duration;
+  final bool isbubbleApp;
 
   BubbleChartLayout({
     required this.children,
     this.radius,
     this.duration,
+    this.isbubbleApp = true,
   });
 
   @override
@@ -21,6 +23,7 @@ class BubbleChartLayout extends StatelessWidget {
           root: BubbleNode.node(children: children),
           radius: radius,
           size: Size(constraints.maxWidth, constraints.maxHeight),
+          isBubbleApp: isbubbleApp,
         );
 
         return Stack(
@@ -29,6 +32,7 @@ class BubbleChartLayout extends StatelessWidget {
               ..add(
                 duration == null
                     ? Positioned(
+                        key: node.key,
                         top: node.y! - node.radius!,
                         left: node.x! - node.radius!,
                         width: node.radius! * 2,
@@ -36,6 +40,7 @@ class BubbleChartLayout extends StatelessWidget {
                         child: BubbleLayer(bubble: node),
                       )
                     : AnimatedPositioned(
+                        key: node.key,
                         top: node.y! - node.radius!,
                         left: node.x! - node.radius!,
                         width: node.radius! * 2,

@@ -13,22 +13,23 @@ class BubbleLayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
+      borderRadius: BorderRadius.circular(bubble!.radius! * 2),
+      child: InkResponse(
         borderRadius: BorderRadius.circular(bubble!.radius! * 2),
-        child: InkResponse(
-          borderRadius: BorderRadius.circular(bubble!.radius! * 2),
-          onTap: onTap,
-          child: Container(
-            width: bubble!.radius! * 2,
-            height: bubble!.radius! * 2,
-            decoration: BoxDecoration(
-              border: bubble!.options?.border ?? Border(),
-              color: bubble!.options?.color ?? Theme.of(context).primaryColor,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: bubble!.options?.child ?? Container(),
-            ),
+        onTap: onTap,
+        child: Container(
+          width: bubble!.radius! * 2,
+          height: bubble!.radius! * 2,
+          decoration: BoxDecoration(
+            border: bubble!.options?.border ?? Border(),
+            color: bubble!.options?.color ?? Theme.of(context).primaryColor,
+            shape: BoxShape.circle,
           ),
-        ));
+          child: Center(
+            child: bubble!.options?.child ?? Container(),
+          ),
+        ),
+      ),
+    );
   }
 }
